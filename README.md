@@ -1,5 +1,9 @@
 # OpenGaia
 
+![Earth from space — NASA Blue Marble](assets/earth-from-space.jpg)
+
+*NASA Earth Observatory image by Robert Simmon and Reto Stöckli (public domain).*
+
 **Planetary Simulator for Humanity's Foresight**
 
 An open-source, modular, community-driven digital twin of the entire Earth system — coupling physics, biology, ecology, socio-economics, technology, culture, and governance into one coherent, queryable, simulatable whole.

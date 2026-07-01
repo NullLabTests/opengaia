@@ -9,3 +9,7 @@ Reference implementations for coupling OpenGaia with:
 Each adapter translates between external data schemas and OpenGaia's WorldState,
 enabling the coupling engine to run with real high-fidelity backends.
 """
+
+from .earth2studio import Earth2StudioAdapter
+
+__all__ = ["Earth2StudioAdapter"]

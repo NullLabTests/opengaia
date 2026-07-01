@@ -14,7 +14,7 @@ states. The adapters here make that integration concrete.
 
 | Adapter | Status | Description |
 |---------|--------|-------------|
-| (none yet) | Planned | First integration target: Earth2Studio |
+| Earth2Studio | Stub (v0.2) | NVIDIA Earth-2 AI-accelerated climate emulators — `Earth2StudioAdapter` |
 
 ## Integration Patterns
 

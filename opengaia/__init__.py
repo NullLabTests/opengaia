@@ -12,10 +12,14 @@ __version__ = "0.2.1"
 
 from .core.coupling_engine import WorldState, CouplingEngine
 from .core.coupling_engine import toy_climate_step, toy_socio_step
+from .core.xarray_state import XarrayWorldState
+from .adapters.earth2studio import Earth2StudioAdapter
 
 __all__ = [
     "WorldState",
     "CouplingEngine",
     "toy_climate_step",
     "toy_socio_step",
+    "XarrayWorldState",
+    "Earth2StudioAdapter",
 ]
