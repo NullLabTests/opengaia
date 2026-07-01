@@ -106,3 +106,4 @@ wandb/
 lightning_logs/
 checkpoints/
 hf_cache/
+opengaia-v0.1-seed.zip
