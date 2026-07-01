@@ -1,5 +1,3 @@
-import numpy as np
-import xarray as xr
 from opengaia.core.xarray_state import XarrayWorldState
 
 

@@ -15,7 +15,7 @@ Integration levels (see docs/architecture.md):
 """
 
 from __future__ import annotations
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import numpy as np
 from ..core.coupling_engine import WorldState
 
@@ -47,7 +47,7 @@ class Earth2StudioAdapter:
         else:
             self._init_stub()
 
-    def _load_earth2studio_model(self):
+    def _load_earth2studio_model(self) -> None:
         """Initialize real Earth2Studio pipeline.
 
         This requires the `earth2studio` package to be installed.
@@ -64,7 +64,7 @@ class Earth2StudioAdapter:
                 f"Underlying error: {e}"
             )
 
-    def _init_stub(self):
+    def _init_stub(self) -> None:
         """Toy stub that mimics the Earth2Studio interface for development."""
         self._stub_temp = np.zeros((1, 1, 721, 1440))  # (batch, lead, lat, lon)
         self._loaded = True

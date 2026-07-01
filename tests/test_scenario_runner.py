@@ -1,6 +1,4 @@
-from pathlib import Path
 import yaml
-import numpy as np
 
 from opengaia.core.scenario_runner import ScenarioConfig, build_engine, build_state, run_scenario
 from opengaia.core.coupling_engine import WorldState, CouplingEngine

@@ -113,7 +113,7 @@ class XarrayWorldState:
         return self._t
 
     @t.setter
-    def t(self, value: int):
+    def t(self, value: int) -> None:
         self._t = value
 
     @property
@@ -121,7 +121,7 @@ class XarrayWorldState:
         return int(self._ds.coords["year"].values)
 
     @year.setter
-    def year(self, value: int):
+    def year(self, value: int) -> None:
         self._ds.coords["year"] = value
 
     @property
@@ -133,7 +133,7 @@ class XarrayWorldState:
         data: Dict[str, Union[float, np.ndarray]],
         region: int = 0,
         ensemble: int = 0,
-    ):
+    ) -> None:
         """Set values at current timestep for one or more variables."""
         for var, val in data.items():
             if var in self._ds:
@@ -143,9 +143,9 @@ class XarrayWorldState:
 
     def get(self, var: str, region: int = 0, ensemble: int = 0) -> np.ndarray:
         """Get a variable timeseries for a given region and ensemble."""
-        return self._ds[var].sel(region=region, ensemble=ensemble).values
+        return np.asarray(self._ds[var].sel(region=region, ensemble=ensemble).values)
 
-    def record(self, extra: Optional[Dict[str, Any]] = None):
+    def record(self, extra: Optional[Dict[str, Any]] = None) -> None:
         """Advance to next timestep (in-place)."""
         if self._t + 1 < self._ds.sizes["time"]:
             self._t += 1
@@ -153,14 +153,14 @@ class XarrayWorldState:
             for var in self._ds.data_vars:
                 self._ds[var].loc[{"time": self._t}] = self._ds[var].loc[{"time": self._t - 1}]
 
-    def to_dataframe(self) -> "xr.DataArray":
+    def to_dataframe(self) -> Any:
         """Flatten to a pandas DataFrame for export."""
         return self._ds.to_dataframe()
 
     def to_dict(self) -> Dict[str, Any]:
         """Return current state values as a flat dict."""
         return {
-            var: float(self._ds[var].isel(time=self._t).mean().values)
+            str(var): float(self._ds[str(var)].isel(time=self._t).mean().values)
             for var in self._ds.data_vars
         }
 

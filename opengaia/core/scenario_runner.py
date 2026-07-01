@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 import yaml
 
 import numpy as np
@@ -10,13 +10,13 @@ import numpy as np
 from .coupling_engine import WorldState, CouplingEngine, toy_climate_step, toy_socio_step
 
 
-def _backend_step_fn(backend: str):
+def _backend_step_fn(backend: str) -> Callable[[WorldState, float], None]:
     """Resolve a climate backend name to a step function."""
     if backend == "toy":
         return toy_climate_step
     try:
         import opengaia.adapters.earth2studio as e2s
-        return e2s.Earth2StudioAdapter(model_name=backend).step
+        return e2s.Earth2StudioAdapter(model_name=backend).step  # type: ignore[return-value]
     except ImportError:
         raise ValueError(f"Unsupported climate backend: {backend}")
 
@@ -30,7 +30,7 @@ class ScenarioConfig:
             self.data: Dict[str, Any] = yaml.safe_load(f)
         self._validate()
 
-    def _validate(self):
+    def _validate(self) -> None:
         required = ["name", "climate"]
         for key in required:
             if key not in self.data:
@@ -38,23 +38,23 @@ class ScenarioConfig:
 
     @property
     def name(self) -> str:
-        return self.data.get("name", "Unnamed Scenario")
+        return str(self.data.get("name", "Unnamed Scenario"))
 
     @property
     def description(self) -> str:
-        return self.data.get("description", "")
+        return str(self.data.get("description", ""))
 
     @property
     def climate_backend(self) -> str:
-        return self.data.get("climate", {}).get("backend", "toy")
+        return str(self.data.get("climate", {}).get("backend", "toy"))
 
     @property
     def initial_year(self) -> int:
-        return self.data.get("climate", {}).get("initial_year", 2026)
+        return int(self.data.get("climate", {}).get("initial_year", 2026))
 
     @property
     def end_year(self) -> int:
-        return self.data.get("climate", {}).get("end_year", 2100)
+        return int(self.data.get("climate", {}).get("end_year", 2100))
 
     @property
     def years(self) -> int:
@@ -62,19 +62,23 @@ class ScenarioConfig:
 
     @property
     def socio_economic(self) -> Dict[str, Any]:
-        return self.data.get("socio_economic", {})
+        val = self.data.get("socio_economic", {})
+        return val if isinstance(val, dict) else {}
 
     @property
     def safety_sandbox(self) -> Dict[str, Any]:
-        return self.data.get("safety_sandbox", {})
+        val = self.data.get("safety_sandbox", {})
+        return val if isinstance(val, dict) else {}
 
     @property
     def output(self) -> Dict[str, Any]:
-        return self.data.get("output", {})
+        val = self.data.get("output", {})
+        return val if isinstance(val, dict) else {}
 
     @property
     def monte_carlo(self) -> Dict[str, Any]:
-        return self.data.get("monte_carlo", {})
+        val = self.data.get("monte_carlo", {})
+        return val if isinstance(val, dict) else {}
 
 
 def build_engine(config: ScenarioConfig) -> CouplingEngine:
@@ -105,8 +109,7 @@ def build_engine(config: ScenarioConfig) -> CouplingEngine:
                         alignment_score=1.0 - float(cap) * 0.3,
                     )
                 )
-        engine.register_module("safety_sandbox", sandbox.step, order=2)
-        engine._sandbox = sandbox
+        engine.register_module("safety_sandbox", sandbox.step, order=2)  # type: ignore[arg-type]
 
     return engine
 
