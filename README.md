@@ -228,6 +228,54 @@ This is ambitious but no more so than other successful large open scientific sof
 
 ---
 
+## Scenario Format
+
+OpenGaia scenarios are YAML files that describe a complete simulation experiment. Here is the schema with an annotated example:
+
+```yaml
+# ── Required ───────────────────────────────────────────
+name: "My Scenario"                   # short human-readable name
+climate:
+  backend: "toy"                      # "toy" | "e2s_dlwp" | …
+  initial_year: 2026                  # start year
+  end_year:   2060                    # end year (required: > initial_year)
+
+# ── Optional ───────────────────────────────────────────
+description: >                         # free-text description
+  A longer description of the scenario, its motivation,
+  assumptions, and what it tests.
+
+socio_economic:
+  n_regions: 10                       # number of regions in the agent model
+
+safety_sandbox:
+  enabled: false                      # set true to insert AI agents
+  agent_capabilities: [0.3, 0.5, 0.7, 0.9]
+  agent_motivations: ["cooperation", "power_seeking", "deception"]
+
+output:
+  save_csv: true                      # write per-run CSV files
+  save_nc: false                      # write NetCDF (requires xarray)
+  plot: false
+
+monte_carlo:
+  runs: 50                            # number of ensemble runs
+  seeds: [42]                         # seed list for reproducibility
+  variables:                          # random variables with distributions
+    climate_sensitivity:
+      dist: "normal"
+      mean: 3.0
+      std: 0.5
+```
+
+Run it with:
+
+```bash
+opengaia run-scenario my_scenario.yaml --output results/
+```
+
+See `examples/configs/` for ready-to-run scenario files.
+
 ## Getting Started
 
 ### Installation

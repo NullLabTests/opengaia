@@ -174,11 +174,12 @@ def run_scenario(
         seed=seed,
     )
 
-    console.print(f"[green]Scenario complete:[/green] {result['scenario']}")
-    console.print(f"  Runs: {result['n_runs']}")
-    console.print(f"  Final mean temp anomaly: {result['final_temp']:.2f} °C")
-    if output_dir:
-        console.print(f"  Results saved to: {output_dir}")
+    s = result.summary
+    console.print(f"[green]Scenario complete:[/green] {s['scenario']}")
+    console.print(f"  Runs: {s['n_runs']}, Years: {s['initial_year']}–{s['final_year']}")
+    console.print(f"  Final mean temp anomaly: {s['final_temp_anomaly']:.2f} °C")
+    if s["output_dir"]:
+        console.print(f"  Results saved to: {s['output_dir']}")
 
 
 def _run_socio_demo(years: int):
