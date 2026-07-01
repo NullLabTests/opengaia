@@ -1,67 +1,68 @@
 # Contributing to OpenGaia
 
-Thank you for your interest in OpenGaia — the open-source planetary simulator for humanity's foresight. This is an ambitious, high-stakes project. We welcome contributors who bring rigor, humility, and a genuine desire to build tools that help humanity navigate complexity more wisely.
+Thanks for your interest in OpenGaia — the open-source planetary-scale simulator.
 
-## Code of Conduct
+## Quickstart
 
-Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md). We are committed to a welcoming, harassment-free environment for everyone.
-
-## How to Contribute
-
-### 1. Start Small and Focused
-- Look for issues labeled `good first issue`, `help wanted`, or `documentation`.
-- Read the architecture and roadmap docs before proposing large changes.
-- For new features or modules, open a discussion or issue first to align on scope and design.
-
-### 2. Development Setup
 ```bash
-git clone https://github.com/opengaia/opengaia.git
+# Clone and install
+git clone https://github.com/nulllabtests/opengaia.git
 cd opengaia
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[full,dev]"
-pre-commit install  # highly recommended
-```
+pip install -e ".[dev]"
 
-Run tests and linting:
-```bash
+# Verify your setup
 pytest
 ruff check .
-ruff format .
-mypy opengaia
 ```
 
-### 3. Pull Request Process
-- Fork the repo and create a feature branch from `main`.
-- Write clear commit messages and update relevant documentation.
-- Include tests for new functionality (even simple ones for stubs).
-- Ensure the MVP demo and existing examples still run.
-- Reference any related issues.
-- Be patient — reviews may take time because we prioritize correctness and alignment with the mission.
+## Find Something to Work On
 
-### 4. Areas Where We Especially Need Help
-- **Climate / Earth System Integration**: Wrapping or extending ACE, Earth2Studio, adding carbon cycle or ecosystem components.
-- **Agent-Based Socio-Economic Modeling**: Designing grounded agents, calibration pipelines, validation against historical data.
-- **Coupling Engine**: Latent space techniques, multi-fidelity orchestration, WorldState schema design.
-- **External Digital Twin Adapters**: Building adapters for DestinE, NASA ESDT, ESA DTE, Earth2Studio — see `adapters/README.md` and `docs/architecture.md`.
-- **Safety Sandbox**: Frameworks for inserting and analyzing advanced AI agents in societal context.
-- **Visualization & Interfaces**: Interactive dashboards, globe rendering, natural language query parsing, uncertainty visualization.
-- **Data & Validation**: Ingestion pipelines, synthetic data generators, historical backtesting suites, uncertainty quantification.
-- **Documentation & Communication**: Tutorials, scenario examples, governance docs, outreach.
-- **Infrastructure**: CI/CD, compute scaling patterns, packaging.
+- **Good first issues** — labeled `good first issue` on GitHub. These are small, well-scoped tasks.
+- **Help wanted** — labeled `help wanted`. Slightly larger tasks where maintainer input may be needed.
+- **Domain expertise** — OpenGaia needs climate scientists, economists, AI safety researchers, and visualization designers. Open a Discussion with your idea.
+- **Docs & tutorials** — Writing is valued equally with code. Outdated docs, missing tutorials, clearer architecture explanations all count.
 
-### 5. Intellectual Honesty
-This project deals with high-stakes topics (climate, AI risk, societal futures). 
-- Be explicit about assumptions, limitations, and uncertainty.
-- Never overclaim predictive power.
-- Credit prior work generously.
-- When in doubt, prioritize transparency and contestability over polish.
+## Making Changes
 
-### 6. Governance Note
-Early contributions shape the culture. We are starting lightweight but intend to evolve toward a transparent foundation-style governance. Major design decisions will be discussed publicly.
+1. **Discuss first** (optional but recommended): Open an issue or Discussion before significant work to avoid duplication or misalignment.
+2. **Fork & branch**: Create a feature branch off `main`:
+   ```bash
+   git checkout -b feat/my-change
+   ```
+3. **Code style**:
+   - Python 3.10+ with type annotations
+   - 100 char line length
+   - Run `ruff check .` before committing
+   - Add tests for new functionality
+4. **Commit**: Write clear, descriptive commit messages.
+5. **Pull request**: Open a PR against `main`. Include a summary of changes and any relevant issue numbers.
 
-## Questions?
+## Code Review
 
-Open a GitHub Discussion or issue. We are happy to help onboard contributors who share the mission.
+- Every PR needs at least one maintainer approval.
+- Reviewers will check: correctness, test coverage, type safety, documentation, and architectural fit.
+- Be responsive to feedback — we're all building this together.
 
-Thank you for helping build the simulator we wish we had.
+## Testing
+
+```bash
+pytest                           # all tests
+pytest tests/test_coupling_engine.py  # single file
+pytest -k "scenario"             # keyword match
+```
+
+## Development Environment
+
+```bash
+pip install -e ".[dev]"   # adds pytest, ruff, mypy
+ruff check .              # lint
+mypy opengaia             # type check
+```
+
+## Governance
+
+OpenGaia governance is documented in `governance.md`. During pre-alpha, the project lead has final authority on design decisions, with a transition to maintainer council planned for v1.0.
+
+## Need Help?
+
+Open a [GitHub Discussion](https://github.com/nulllabtests/opengaia/discussions) or ask in your PR. We aim to be welcoming and responsive.

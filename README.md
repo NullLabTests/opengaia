@@ -1,6 +1,6 @@
 # OpenGaia
 
-![Earth from space — NASA Blue Marble](assets/earth-from-space.jpg)
+<img src="assets/earth-from-space.jpg" alt="Earth from space — NASA Blue Marble" width="33%">
 
 *NASA Earth Observatory image by Robert Simmon and Reto Stöckli (public domain).*
 
@@ -13,6 +13,12 @@ An open-source, modular, community-driven digital twin of the entire Earth syste
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Status: Pre-Alpha](https://img.shields.io/badge/status-pre--alpha-orange)](https://github.com/opengaia/opengaia)
+
+> **⚠️ Honest status: This is a framework prototype with toy dynamics.**
+>
+> All simulations currently use simplified, uncalibrated models (random-walk climate, linear GDP, rule-based agents). Outputs are **illustrative only** — they demonstrate how the coupling architecture works, not how the real world behaves. We are actively seeking domain experts to wire real backends (ACE, Earth2Studio, economic models). Until then, treat every number as a *demo of the machinery*, not a prediction.
+>
+> *TL;DR: The architecture is real; the science is not yet.*
 
 ---
 
@@ -228,6 +234,54 @@ This is ambitious but no more so than other successful large open scientific sof
 
 ---
 
+## Scenario Format
+
+OpenGaia scenarios are YAML files that describe a complete simulation experiment. Here is the schema with an annotated example:
+
+```yaml
+# ── Required ───────────────────────────────────────────
+name: "My Scenario"                   # short human-readable name
+climate:
+  backend: "toy"                      # "toy" | "e2s_dlwp" | …
+  initial_year: 2026                  # start year
+  end_year:   2060                    # end year (required: > initial_year)
+
+# ── Optional ───────────────────────────────────────────
+description: >                         # free-text description
+  A longer description of the scenario, its motivation,
+  assumptions, and what it tests.
+
+socio_economic:
+  n_regions: 10                       # number of regions in the agent model
+
+safety_sandbox:
+  enabled: false                      # set true to insert AI agents
+  agent_capabilities: [0.3, 0.5, 0.7, 0.9]
+  agent_motivations: ["cooperation", "power_seeking", "deception"]
+
+output:
+  save_csv: true                      # write per-run CSV files
+  save_nc: false                      # write NetCDF (requires xarray)
+  plot: false
+
+monte_carlo:
+  runs: 50                            # number of ensemble runs
+  seeds: [42]                         # seed list for reproducibility
+  variables:                          # random variables with distributions
+    climate_sensitivity:
+      dist: "normal"
+      mean: 3.0
+      std: 0.5
+```
+
+Run it with:
+
+```bash
+opengaia run-scenario my_scenario.yaml --output results/
+```
+
+See `examples/configs/` for ready-to-run scenario files.
+
 ## Getting Started
 
 ### Installation
@@ -384,4 +438,22 @@ Let's build the simulator we wish we had — before we need it most.
 
 *This repository is the seed. It will grow through contributions from people who believe better tools for understanding our complex world are one of the highest-leverage things we can create.*
 
-**Start here**: Run the demo. Read the architecture doc. Open an issue with your expertise or idea.
+## Get Involved
+
+OpenGaia needs contributors across many domains:
+
+| Domain | How to help |
+|--------|-------------|
+| **Earth science / climate** | Wire real emulators (ACE, FourCastNet, CESM) into the adapter layer |
+| **Economics / sociology** | Improve agent models, add supply chains, trade, migration dynamics |
+| **AI safety** | Design interventions, alignment metrics, sandbox experiments |
+| **Engineering** | Build the UI/globe dashboard, data pipelines, CI/CD, packaging |
+| **Science communication** | Write docs, scenario narratives, tutorials, outreach |
+
+**Quickstart:**
+- Run `opengaia demo mvp` to see the current toy model in action
+- Read `docs/architecture.md` for the full design
+- Browse `examples/configs/` for scenario YAML files
+- Open a [GitHub Issue](https://github.com/nulllabtests/opengaia/issues) with your idea or find a `good first issue` label
+
+Licensed under Apache 2.0 — all contributions welcome.
