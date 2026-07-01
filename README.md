@@ -14,6 +14,12 @@ An open-source, modular, community-driven digital twin of the entire Earth syste
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Status: Pre-Alpha](https://img.shields.io/badge/status-pre--alpha-orange)](https://github.com/opengaia/opengaia)
 
+> **⚠️ Honest status: This is a framework prototype with toy dynamics.**
+>
+> All simulations currently use simplified, uncalibrated models (random-walk climate, linear GDP, rule-based agents). Outputs are **illustrative only** — they demonstrate how the coupling architecture works, not how the real world behaves. We are actively seeking domain experts to wire real backends (ACE, Earth2Studio, economic models). Until then, treat every number as a *demo of the machinery*, not a prediction.
+>
+> *TL;DR: The architecture is real; the science is not yet.*
+
 ---
 
 ## Mission
