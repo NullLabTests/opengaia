@@ -1,6 +1,6 @@
 # OpenGaia
 
-![Earth from space — NASA Blue Marble](assets/earth-from-space.jpg)
+<img src="assets/earth-from-space.jpg" alt="Earth from space — NASA Blue Marble" width="33%">
 
 *NASA Earth Observatory image by Robert Simmon and Reto Stöckli (public domain).*
 
@@ -384,4 +384,22 @@ Let's build the simulator we wish we had — before we need it most.
 
 *This repository is the seed. It will grow through contributions from people who believe better tools for understanding our complex world are one of the highest-leverage things we can create.*
 
-**Start here**: Run the demo. Read the architecture doc. Open an issue with your expertise or idea.
+## Get Involved
+
+OpenGaia needs contributors across many domains:
+
+| Domain | How to help |
+|--------|-------------|
+| **Earth science / climate** | Wire real emulators (ACE, FourCastNet, CESM) into the adapter layer |
+| **Economics / sociology** | Improve agent models, add supply chains, trade, migration dynamics |
+| **AI safety** | Design interventions, alignment metrics, sandbox experiments |
+| **Engineering** | Build the UI/globe dashboard, data pipelines, CI/CD, packaging |
+| **Science communication** | Write docs, scenario narratives, tutorials, outreach |
+
+**Quickstart:**
+- Run `opengaia demo mvp` to see the current toy model in action
+- Read `docs/architecture.md` for the full design
+- Browse `examples/configs/` for scenario YAML files
+- Open a [GitHub Issue](https://github.com/nulllabtests/opengaia/issues) with your idea or find a `good first issue` label
+
+Licensed under Apache 2.0 — all contributions welcome.
