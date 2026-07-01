@@ -184,3 +184,26 @@ class TestResolveBackend:
     def test_unknown_backend_falls_back_to_toy(self):
         fn = _resolve_backend("nonexistent_backend_xyz")
         assert fn == toy_climate_step
+
+
+def test_sandbox_engine_integration(tmp_path):
+    """Safety sandbox step receives dict, not WorldState — verify it runs end-to-end."""
+    config_data = _make_config(
+        safety_sandbox={
+            "enabled": True,
+            "agent_capabilities": [0.5],
+            "agent_motivations": ["cooperation"],
+        },
+    )
+    config_path = tmp_path / "sb_config.yaml"
+    import yaml
+
+    with open(config_path, "w") as f:
+        yaml.dump(config_data, f)
+    config = ScenarioConfig(config_path)
+    engine = build_engine(config)
+    state = WorldState(year=2026)
+    engine.run(state, steps=5)
+    assert state.t == 5
+    assert isinstance(state.history, list)
+    assert len(state.history) == 5  # 5 steps, each records

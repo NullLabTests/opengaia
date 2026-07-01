@@ -227,7 +227,10 @@ def build_engine(config: ScenarioConfig) -> CouplingEngine:
                         alignment_score=1.0 - float(cap) * 0.3,
                     )
                 )
-        engine.register_module("safety_sandbox", sandbox.step, order=2)  # type: ignore[arg-type]
+        def _sandbox_step(state: WorldState, dt: float) -> None:
+            sandbox.step(state.to_dict(), dt)
+
+        engine.register_module("safety_sandbox", _sandbox_step, order=2)  # type: ignore[arg-type]
 
     return engine
 
