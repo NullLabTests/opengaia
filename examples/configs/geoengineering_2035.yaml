@@ -1,0 +1,53 @@
+# OpenGaia Scenario: Solar Geoengineering Deployment in 2035
+# Illustrative config for future what-if analysis.
+# Real implementation will use the coupling engine's scenario runner.
+name: "Solar Geoengineering Scenario (SSP2-4.5)"
+description: >
+  Deploy stratospheric aerosol injection (SAI) starting 2035 under
+  SSP2-4.5 (middle-of-the-road socio-economic pathway). Compare
+  temperature, agricultural productivity, and conflict risk outcomes
+  against a no-geoengineering counterfactual.
+
+climate:
+  backend: "toy"  # swap to ACE/Earth2Studio for real analysis
+  ssp_scenario: "SSP2-4.5"
+  initial_year: 2026
+  end_year: 2100
+
+geoengineering:
+  enabled: true
+  deployment_year: 2035
+  type: "stratospheric_aerosol_injection"
+  intensity:  # Tg SO2/year, ramping
+    start: 5
+    peak: 20
+    peak_year: 2050
+    phase_out: 2080
+  temperature_target: 1.5  # °C, target to stay below
+
+socio_economic:
+  n_regions: 10
+  agent_model: "behavioral"  # simple | behavioral | llm
+  policy:
+    carbon_price: 50  # USD/tCO2, starting 2026
+    price_growth: 0.05  # annual real increase
+  adaptation:
+    ag_rd_share: 0.02  # fraction of ag GDP for adaptation research
+
+output:
+  save_csv: true
+  save_nc: false  # requires xarray
+  plot: true
+  metrics:
+    - temp_anomaly
+    - ag_productivity
+    - conflict_risk_index
+    - gdp_per_capita
+    - inequality_gini
+
+monte_carlo:
+  runs: 100
+  seeds: [42, 43, 44]
+  variables:
+    climate_sensitivity: {dist: "normal", mean: 3.0, std: 0.5}
+    damage_function_curvature: {dist: "uniform", low: 1.5, high: 2.5}

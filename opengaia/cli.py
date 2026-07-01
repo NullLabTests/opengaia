@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 import numpy as np
+from pathlib import Path
 
 app = typer.Typer(
     name="opengaia",
@@ -56,16 +57,29 @@ def demo(
 
 @app.command()
 def info():
-    """Show project mission and how to get involved."""
+    """Show project mission, positioning, and how to get involved."""
     console.print(
         Panel.fit(
-            "[bold]OpenGaia Mission[/bold]\n\n"
-            "Build the open-source, modular planetary simulator that couples\n"
-            "Earth systems, human societies, technology, and governance.\n\n"
-            "Use it to explore policies, understand risks, and accelerate\n"
-            "safe progress on humanity's biggest challenges.\n\n"
-            "Start: Run [cyan]opengaia demo mvp[/cyan]\n"
-            "Contribute: See CONTRIBUTING.md and open issues on GitHub.",
+            "[bold]OpenGaia[/bold]\n"
+            "Open-source planetary-scale simulator for humanity's foresight.\n\n"
+            "What it is:\n"
+            "  A modular coupling framework that connects Earth system models\n"
+            "  (physics/bio/climate) with socio-economic agent simulations,\n"
+            "  technology & innovation dynamics, and AI safety research.\n\n"
+            "What it is not:\n"
+            "  A replacement for DestinE, NASA ESDT, ESA DTE, or NVIDIA Earth-2.\n"
+            "  OpenGaia complements these by adding the human-system coupling\n"
+            "  layer that institutional efforts do not provide.\n\n"
+            "Key modules:\n"
+            "  core/           — Coupling engine + WorldState\n"
+            "  physics_bio/    — Climate emulator (toy → ACE/Earth2Studio)\n"
+            "  socio_economic/ — Agents, economy, demographics, migration\n"
+            "  tech_innovation/— R&D, tech diffusion, AI capability\n"
+            "  safety_sandbox/ — AI agent insertion + alignment research\n\n"
+            "Start: [cyan]opengaia demo mvp[/cyan]\n"
+            "Demos: [cyan]opengaia demo socio|tech|safety[/cyan]\n"
+            "Modules: [cyan]opengaia modules[/cyan]\n"
+            "Contribute: See CONTRIBUTING.md and GitHub Issues.",
             title="OpenGaia",
         )
     )
@@ -83,10 +97,48 @@ def modules():
     table.add_row("socio_economic", "Implemented", "Agents, economy, demographics, migration")
     table.add_row("tech_innovation", "Implemented", "R&D, tech diffusion, AI capability")
     table.add_row("safety_sandbox", "Implemented", "AI agent insertion, alignment metrics")
+    table.add_row("adapters", "Stub", "Interoperability with external digital twins")
     table.add_row("data", "Empty stub", "Ingestion pipelines, synthetic generators")
     table.add_row("eval", "Empty stub", "Validation, benchmarks, UQ")
     table.add_row("ui_viz", "Empty stub", "Dashboard, globe, NL query interface")
     console.print(table)
+
+
+@app.command()
+def scenarios():
+    """List available example scenario configuration files."""
+    config_dir = Path(__file__).resolve().parent.parent / "examples" / "configs"
+    if not config_dir.exists():
+        console.print("[yellow]No scenario configs found yet.[/yellow]")
+        raise typer.Exit(0)
+
+    yaml_files = sorted(config_dir.glob("*.yaml"))
+    if not yaml_files:
+        console.print("[yellow]No scenario configs found yet.[/yellow]")
+        raise typer.Exit(0)
+
+    table = Table(title="Available Scenario Configs")
+    table.add_column("Config", style="cyan")
+    table.add_column("Description")
+    for yf in yaml_files:
+        # Read first line for a basic name
+        content = yf.read_text().split("\n")
+        name_line = ""
+        for line in content:
+            if line.startswith("name:"):
+                name_line = line.replace("name:", "").strip().strip('"').strip("'")
+                break
+        table.add_row(yf.name, name_line or "No description")
+    console.print(table)
+    console.print("\nRun with: [cyan]opengaia run-scenario --config <file>[/cyan] (coming soon)")
+
+
+@app.command()
+def run_scenario():
+    """Run a scenario from a YAML config (placeholder — not yet implemented)."""
+    console.print("[yellow]Scenario runner is not yet implemented in v0.2.[/yellow]")
+    console.print("See [cyan]examples/configs/[/cyan] for example YAML configs.")
+    console.print("The runner will be implemented in v0.5 as part of the coupling engine.")
 
 
 def _run_socio_demo(years: int):
@@ -132,7 +184,8 @@ def _run_tech_demo(years: int):
         if t % 10 == 0:
             adoption = tech.get_adoption_vector()
             console.print(
-                f"  Year {t}: Solar={adoption['solar']:.2%}, EV={adoption['ev']:.2%}, AI Cap={ai.capability_index:.2f}"
+                f"  Year {t}: Solar={adoption['solar']:.2%}, EV={adoption['ev']:.2%}, "
+                f"AI Cap={ai.capability_index:.2f}"
             )
     console.print(f"[green]Tech Demo Complete ({years} years)[/green]")
 

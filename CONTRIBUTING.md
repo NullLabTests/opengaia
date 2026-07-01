@@ -43,6 +43,7 @@ mypy opengaia
 - **Climate / Earth System Integration**: Wrapping or extending ACE, Earth2Studio, adding carbon cycle or ecosystem components.
 - **Agent-Based Socio-Economic Modeling**: Designing grounded agents, calibration pipelines, validation against historical data.
 - **Coupling Engine**: Latent space techniques, multi-fidelity orchestration, WorldState schema design.
+- **External Digital Twin Adapters**: Building adapters for DestinE, NASA ESDT, ESA DTE, Earth2Studio — see `adapters/README.md` and `docs/architecture.md`.
 - **Safety Sandbox**: Frameworks for inserting and analyzing advanced AI agents in societal context.
 - **Visualization & Interfaces**: Interactive dashboards, globe rendering, natural language query parsing, uncertainty visualization.
 - **Data & Validation**: Ingestion pipelines, synthetic data generators, historical backtesting suites, uncertainty quantification.

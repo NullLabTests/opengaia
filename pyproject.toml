@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "opengaia"
-version = "0.1.0"
+version = "0.2.1"
 description = "OpenGaia: An open-source planetary-scale simulator coupling Earth systems, human societies, technology, and governance for foresight and decision-making."
 readme = "README.md"
 license = {text = "Apache-2.0"}

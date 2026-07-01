@@ -8,7 +8,7 @@ in a modular, extensible way.
 See README.md and docs/ for vision, architecture, and getting started.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 from .core.coupling_engine import WorldState, CouplingEngine
 from .core.coupling_engine import toy_climate_step, toy_socio_step

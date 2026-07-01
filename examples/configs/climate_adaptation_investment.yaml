@@ -1,0 +1,71 @@
+# OpenGaia Scenario: Climate Adaptation Investment Strategies
+# Illustrative config comparing proactive vs reactive adaptation investment
+# across regions with different income levels and climate exposures.
+name: "Climate Adaptation Investment Strategies"
+description: >
+  Compare proactive (front-loaded) vs reactive (damage-triggered) adaptation
+  investment policies across regions with varying income levels and climate
+  vulnerability. Measures outcomes in GDP, migration, inequality, and
+  food security over 2026–2100.
+
+climate:
+  backend: "toy"
+  ssp_scenario: "SSP3-7.0"  # high-emissions, regional rivalry
+  initial_year: 2026
+  end_year: 2100
+
+adaptation:
+  strategies:
+    proactive:
+      ag_rd_share: 0.04
+      infrastructure_spending: 0.02  # fraction of GDP
+      coastal_protection: "full"
+      early_warning_systems: true
+      implementation_year: 2026
+    reactive:
+      ag_rd_share: 0.01
+      infrastructure_spending: 0.005
+      coastal_protection: "major_cities_only"
+      early_warning_systems: false
+      trigger_temp: 1.5  # °C — start adaptation spending only after this threshold
+    hybrid:
+      ag_rd_share: 0.02
+      infrastructure_spending: 0.01
+      coastal_protection: "phased"
+      early_warning_systems: true
+      implementation_year: 2035  # delayed but deliberate
+
+socio_economic:
+  n_regions: 10
+  agent_model: "behavioral"
+  regions:
+    - name: "Global North"  # high-income, low vulnerability
+      gdp_per_capita: 50.0
+      governance: 0.8
+      adaptive_capacity: 0.7
+    - name: "Global South"  # low-income, high vulnerability
+      gdp_per_capita: 5.0
+      governance: 0.4
+      adaptive_capacity: 0.3
+    - name: "Emerging"  # middle-income, moderate vulnerability
+      gdp_per_capita: 20.0
+      governance: 0.6
+      adaptive_capacity: 0.5
+
+output:
+  save_csv: true
+  plot: true
+  metrics:
+    - temp_anomaly
+    - gdp_per_capita_by_region
+    - migration_flows
+    - inequality_gini
+    - food_security_index
+
+monte_carlo:
+  runs: 30
+  seeds: [42, 43, 44, 45, 46]
+  variables:
+    climate_sensitivity: {dist: "normal", mean: 3.0, std: 0.5}
+    damage_function_exponent: {dist: "uniform", low: 1.5, high: 2.5}
+    adaptation_effectiveness: {dist: "beta", alpha: 3, beta: 2}

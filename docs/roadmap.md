@@ -2,19 +2,23 @@
 
 This is a living document. Milestones are approximate and depend on contributor velocity and funding.
 
-## v0.1 — Seed (Current — Q3 2026)
+## v0.1 — Seed (Q3 2026) ✓
 - Core coupling engine with toy climate + socio-economic dynamics
 - Runnable MVP demo with Monte Carlo + basic visualization
 - Professional project skeleton (README, docs, packaging, CLI, license)
 - Clear architecture and contribution guides
 - **Goal**: Demonstrate the integrative vision and attract initial contributors
 
-## v0.2 — First Real Integration (Q4 2026)
-- Swap toy climate for AllenAI ACE or NVIDIA Earth2Studio open models
-- Basic xarray-backed WorldState
-- Improved agent heterogeneity and grounding (public datasets)
-- Historical backtest validation harness (1950–2025)
-- First public scenario notebook (e.g., "Policy packages under SSP2-4.5")
+## v0.2 — Expanded Modules (Current — Q3/Q4 2026)
+- ✓ Socio-economic agent module (heterogeneous agents, regions, economy, migration)
+- ✓ Technology & innovation module (S-curve diffusion, AI capability, R&D investment)
+- ✓ Safety sandbox prototype (AI agent insertion, alignment metrics, interventions)
+- ✓ 38-unit test suite, ruff-clean code, mypy typing
+- ✓ Adapters stub for interoperability with external digital twins
+- ✓ Example scenario YAML configs for future what-if analysis
+- ⬜ Swap toy climate for AllenAI ACE or NVIDIA Earth2Studio open models
+- ⬜ Basic xarray-backed WorldState
+- ⬜ Historical backtest validation harness (1950–2025)
 
 ## v0.5 — Socio-Economic Depth + Tech Layer (Q1–Q2 2027)
 - Production-grade agent-based socio-economic module (calibrated, validated)

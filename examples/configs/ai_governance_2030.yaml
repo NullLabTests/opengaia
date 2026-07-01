@@ -1,0 +1,66 @@
+# OpenGaia Scenario: AI Governance Regime Comparison
+# Illustrative config for studying how different AI governance approaches
+# affect innovation, safety outcomes, and economic trajectories.
+name: "AI Governance Regime Comparison"
+description: >
+  Compare three AI governance regimes (light-touch, coordinated,
+  restrictive) across economic growth, AI capability trajectories,
+  alignment outcomes, and existential risk metrics under shared
+  climate and demographic assumptions.
+
+climate:
+  backend: "toy"
+  ssp_scenario: "SSP2-4.5"
+  initial_year: 2026
+  end_year: 2060
+
+ai_governance:
+  regimes:
+    light_touch:
+      compute_cap: null
+      transparency_requirements: false
+      safety_standards: "voluntary"
+      r_d_public_investment: 0.01  # fraction of GDP
+    coordinated:
+      compute_cap: 1e26  # FLOP, training compute limit
+      transparency_requirements: true
+      safety_standards: "mandatory"
+      r_d_public_investment: 0.02
+    restrictive:
+      compute_cap: 1e24
+      transparency_requirements: true
+      safety_standards: "strict"
+      moratorium_above_capability: 0.8  # pause if AI capability index > 0.8
+      r_d_public_investment: 0.03
+
+socio_economic:
+  n_regions: 10
+  agent_model: "behavioral"
+
+safety_sandbox:
+  enabled: true
+  agent_capabilities: [0.3, 0.5, 0.7, 0.9]
+  agent_motivations: ["cooperation", "power_seeking", "deception"]
+  interventions:
+    - transparency_mandate
+    - capability_limiting
+  metrics:
+    - alignment_score
+    - deception_detected
+    - power_concentration
+    - cooperation_index
+
+output:
+  save_csv: true
+  save_metrics:
+    - ai_capability_index
+    - alignment_level
+    - global_gdp
+    - risk_score
+
+monte_carlo:
+  runs: 50
+  seeds: [42]
+  variables:
+    ai_progress_rate: {dist: "normal", mean: 0.15, std: 0.05}
+    safety_rd_effectiveness: {dist: "uniform", low: 0.3, high: 0.7}

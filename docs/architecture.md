@@ -88,6 +88,69 @@ This is intended as a primary research tool for empirical AGI safety work.
 - Cluster / cloud: Full ACE/Earth2Studio + thousands of agents via Ray or Dask
 - Future: Decentralized compute contributions (inspired by other open science projects)
 
+## Interoperability with External Digital Twins
+
+OpenGaia is designed from the ground up to couple with, ingest from, and build upon existing Earth digital twin efforts rather than compete with them. This section documents the planned integration patterns.
+
+### Integration Strategy
+
+The coupling engine and module interfaces support three levels of interoperability:
+
+#### Level 1: Output Ingestion (Offline Coupling)
+
+External systems produce outputs (e.g., climate fields from DestinE, NASA ESDT, or Earth2Studio) which OpenGaia ingests as pre-computed forcing data. This is the simplest pattern:
+
+```
+External System → NetCDF/Zarr files → OpenGaia Data Adapter → WorldState
+```
+
+The adapter transforms external data schemas into OpenGaia's WorldState coordinates (time, region, variable). This enables "what-if" analysis using real high-fidelity outputs without requiring OpenGaia to run a climate model.
+
+#### Level 2: Loose Online Coupling
+
+OpenGaia runs in parallel with an external twin, exchanging data at configurable intervals:
+
+```
+OpenGaia (socio-economics + coupling) ←→ External Twin (physics)
+         ↓                                      ↑
+    WorldState  ──periodic sync──→  Adapter → External API
+```
+
+The adapter handles unit conversion, regridding, and temporal interpolation. This pattern matches how operational centers couple atmosphere, ocean, and land models in modern ESMs.
+
+#### Level 3: Tight Coupling (Native Module)
+
+An external system is wrapped as an OpenGaia `step(state, dt)` module. This is the target pattern for Earth2Studio integration:
+
+```python
+from opengaia.adapters.earth2studio import Earth2StudioModule
+engine.register_module("climate", Earth2StudioModule( model="e2s", device="cuda" ), order=0)
+```
+
+### Adapter Architecture
+
+The `adapters/` directory will contain reference implementations:
+
+| Adapter | Status | Description |
+|---------|--------|-------------|
+| `earth2studio` | Planned | Wrap NVIDIA Earth2Studio pipelines as OpenGaia modules |
+| `ace_climate` | Planned | Wrap AllenAI ACE climate emulator |
+| `destine` | Exploratory | Ingest DestinE output datasets |
+| `nasa_esdt` | Exploratory | Interface with NASA ESDT outputs |
+
+Each adapter implements a common `BaseAdapter` interface providing:
+- `load(config)`: Initialize from config or checkpoint
+- `to_worldstate(data)`: Transform external data → WorldState fields
+- `from_worldstate(state)`: Extract boundary conditions for external system
+- `step(state, dt)`: When used as a live module
+
+### Design Principles
+
+1. **Minimal coupling surface**: Adapters translate between external schemas and WorldState, keeping integration complexity bounded.
+2. **Versioned interfaces**: External data schemas and OpenGaia WorldState both evolve; adapters document compatibility.
+3. **Testing with synthetic data**: Each adapter ships with lightweight test fixtures so integration can be validated without access to the external system.
+4. **Community contributions welcome**: Adapters for new external systems can be contributed independently of the core engine.
+
 ## Next Architectural Milestones
 
 ## Current Module Status (v0.2)
