@@ -1,0 +1,187 @@
+"""OpenGaia command-line interface (Typer-based)."""
+
+import typer
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+import numpy as np
+
+app = typer.Typer(
+    name="opengaia",
+    help="OpenGaia — Planetary Simulator for Humanity's Foresight",
+    add_completion=False,
+)
+console = Console()
+
+
+@app.command()
+def version():
+    """Show version."""
+    from opengaia import __version__
+
+    console.print(f"OpenGaia v{__version__}")
+
+
+@app.command()
+def demo(
+    name: str = typer.Argument("mvp", help="Demo name (mvp, socio, tech, safety)"),
+    years: int = typer.Option(30, "--years", "-y", help="Simulation years"),
+    monte_carlo: int = typer.Option(3, "--monte-carlo", "-n", help="Number of runs"),
+    policy: float = typer.Option(0.6, "--policy", "-p", help="Policy strength 0-1"),
+    no_plot: bool = typer.Option(False, "--no-plot", help="Skip matplotlib output"),
+):
+    """Run a built-in demonstration simulation."""
+    if name.lower() == "mvp":
+        console.print(
+            Panel.fit(
+                "[bold cyan]OpenGaia MVP Demo[/bold cyan]\n"
+                "Minimal coupled climate + socio-economic simulation\n"
+                "Toy model for illustration — real modules coming soon.",
+                title="Welcome",
+            )
+        )
+        from examples.mvp_demo import main as mvp_main
+
+        mvp_main()
+    elif name.lower() == "socio":
+        _run_socio_demo(years)
+    elif name.lower() == "tech":
+        _run_tech_demo(years)
+    elif name.lower() == "safety":
+        _run_safety_demo()
+    else:
+        console.print("[red]Available demos: mvp, socio, tech, safety[/red]")
+        raise typer.Exit(1)
+
+
+@app.command()
+def info():
+    """Show project mission and how to get involved."""
+    console.print(
+        Panel.fit(
+            "[bold]OpenGaia Mission[/bold]\n\n"
+            "Build the open-source, modular planetary simulator that couples\n"
+            "Earth systems, human societies, technology, and governance.\n\n"
+            "Use it to explore policies, understand risks, and accelerate\n"
+            "safe progress on humanity's biggest challenges.\n\n"
+            "Start: Run [cyan]opengaia demo mvp[/cyan]\n"
+            "Contribute: See CONTRIBUTING.md and open issues on GitHub.",
+            title="OpenGaia",
+        )
+    )
+
+
+@app.command()
+def modules():
+    """List all registered modules and their status."""
+    table = Table(title="OpenGaia Modules")
+    table.add_column("Module", style="cyan")
+    table.add_column("Status", style="green")
+    table.add_column("Description")
+    table.add_row("core", "Implemented", "Coupling engine, WorldState, orchestrator")
+    table.add_row("physics_bio", "Stub (toy backend)", "Climate, ecosystems, carbon, biology")
+    table.add_row("socio_economic", "Implemented", "Agents, economy, demographics, migration")
+    table.add_row("tech_innovation", "Implemented", "R&D, tech diffusion, AI capability")
+    table.add_row("safety_sandbox", "Implemented", "AI agent insertion, alignment metrics")
+    table.add_row("data", "Empty stub", "Ingestion pipelines, synthetic generators")
+    table.add_row("eval", "Empty stub", "Validation, benchmarks, UQ")
+    table.add_row("ui_viz", "Empty stub", "Dashboard, globe, NL query interface")
+    console.print(table)
+
+
+def _run_socio_demo(years: int):
+    console.print("[bold]Running Socio-Economic Demo...[/bold]")
+    from opengaia.socio_economic.agents import Region, WorldEconomy
+
+    economy = WorldEconomy()
+    for i in range(3):
+        region = Region(
+            region_id=i,
+            name=f"Region_{i}",
+            population=np.random.uniform(50, 500),
+            gdp_per_capita=np.random.uniform(5, 50),
+            governance=np.random.uniform(0.3, 0.8),
+        )
+        region.generate_agents(n=20)
+        economy.add_region(region)
+    for t in range(years):
+        result = economy.step(dt=1.0)
+        if t % 10 == 0:
+            console.print(
+                f"  Year {t}: GDP={result['global_gdp']:.1f}, Emissions={result['emissions']:.1f}"
+            )
+    console.print(f"[green]Socio-Economic Demo Complete ({years} years)[/green]")
+
+
+def _run_tech_demo(years: int):
+    console.print("[bold]Running Technology & Innovation Demo...[/bold]")
+    from opengaia.tech_innovation.tech_diffusion import TechDiffusionModel, Technology
+    from opengaia.tech_innovation.ai_capability import AICapabilityModel
+    from opengaia.tech_innovation.rd_investment import RDInvestmentModel
+
+    tech = TechDiffusionModel()
+    tech.register(Technology(name="solar", growth_rate=0.12))
+    tech.register(Technology(name="ev", growth_rate=0.15))
+    tech.register(Technology(name="fusion", growth_rate=0.02))
+    ai = AICapabilityModel()
+    rd = RDInvestmentModel()
+    for t in range(years):
+        rd_result = rd.step(global_gdp=100000, governance=0.5)
+        tech.step(dt=1.0)
+        ai.step(global_rd=rd_result["productivity_boost"], governance=0.5)
+        if t % 10 == 0:
+            adoption = tech.get_adoption_vector()
+            console.print(
+                f"  Year {t}: Solar={adoption['solar']:.2%}, EV={adoption['ev']:.2%}, AI Cap={ai.capability_index:.2f}"
+            )
+    console.print(f"[green]Tech Demo Complete ({years} years)[/green]")
+
+
+def _run_safety_demo():
+    console.print("[bold]Running Safety Sandbox Demo...[/bold]")
+    from opengaia.safety_sandbox.sandbox import SafetySandbox, AIAgent, AgentMotivation
+    from opengaia.safety_sandbox.interventions import InterventionRegistry
+
+    sandbox = SafetySandbox()
+    sandbox.insert_agent(
+        AIAgent(
+            agent_id="cooperator",
+            capability_level=0.6,
+            motivation=AgentMotivation.COOPERATION,
+            alignment_score=0.9,
+        )
+    )
+    sandbox.insert_agent(
+        AIAgent(
+            agent_id="power_seeker",
+            capability_level=0.8,
+            motivation=AgentMotivation.POWER_SEEKING,
+            alignment_score=0.2,
+        )
+    )
+    sandbox.insert_agent(
+        AIAgent(
+            agent_id="deceiver",
+            capability_level=0.7,
+            motivation=AgentMotivation.DECEPTION,
+            alignment_score=0.3,
+            deception_capability=0.6,
+        )
+    )
+    console.print("  Running sandbox without interventions...")
+    for _ in range(5):
+        results = sandbox.step({"global_gdp": 100000})
+        m = results["_metrics"]
+        console.print(f"    Risk: {m['risk_score']:.3f}, Agents: {m['n_agents']}")
+    registry = InterventionRegistry()
+    console.print("  Applying 'transparency_mandate' intervention...")
+    registry.get("transparency_mandate").apply(sandbox)
+    for _ in range(3):
+        results = sandbox.step({"global_gdp": 100000})
+        m = results["_metrics"]
+        console.print(f"    After intervention - Risk: {m['risk_score']:.3f}")
+    console.print("[green]Safety Sandbox Demo Complete[/green]")
+
+
+if __name__ == "__main__":
+    app()
