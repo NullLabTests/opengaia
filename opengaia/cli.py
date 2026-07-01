@@ -6,6 +6,7 @@ from rich.panel import Panel
 from rich.table import Table
 import numpy as np
 from pathlib import Path
+from typing import Optional
 
 app = typer.Typer(
     name="opengaia",
@@ -134,11 +135,50 @@ def scenarios():
 
 
 @app.command()
-def run_scenario():
-    """Run a scenario from a YAML config (placeholder — not yet implemented)."""
-    console.print("[yellow]Scenario runner is not yet implemented in v0.2.[/yellow]")
-    console.print("See [cyan]examples/configs/[/cyan] for example YAML configs.")
-    console.print("The runner will be implemented in v0.5 as part of the coupling engine.")
+def run_scenario(
+    config: str = typer.Argument(
+        ..., help="Path to scenario YAML config file", metavar="CONFIG"
+    ),
+    years: Optional[int] = typer.Option(
+        None, "--years", "-y", help="Override simulation years from config"
+    ),
+    output_dir: Optional[str] = typer.Option(
+        None, "--output", "-o", help="Output directory for results"
+    ),
+    seed: Optional[int] = typer.Option(
+        None, "--seed", "-s", help="Random seed for reproducibility"
+    ),
+):
+    """Run a scenario from a YAML config — parses config, builds WorldState + CouplingEngine, executes."""
+    config_path = Path(config)
+    if not config_path.exists():
+        console.print(f"[red]Config file not found: {config}[/red]")
+        raise typer.Exit(1)
+
+    from opengaia.core.scenario_runner import ScenarioConfig, run_scenario as _run_scenario
+
+    scenario_config = ScenarioConfig(config_path)
+
+    console.print(
+        Panel.fit(
+            f"[bold cyan]Scenario: {scenario_config.name}[/bold cyan]\n"
+            f"{scenario_config.description[:200]}"
+            + ("..." if len(scenario_config.description) > 200 else ""),
+            title="Running Scenario",
+        )
+    )
+
+    result = _run_scenario(
+        scenario_config,
+        output_dir=Path(output_dir) if output_dir else None,
+        seed=seed,
+    )
+
+    console.print(f"[green]Scenario complete:[/green] {result['scenario']}")
+    console.print(f"  Runs: {result['n_runs']}")
+    console.print(f"  Final mean temp anomaly: {result['final_temp']:.2f} °C")
+    if output_dir:
+        console.print(f"  Results saved to: {output_dir}")
 
 
 def _run_socio_demo(years: int):
