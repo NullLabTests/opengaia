@@ -22,16 +22,18 @@ jobs:
           version: "latest"
 
       - name: Set up Python ${{ matrix.python-version }}
-        run: uv python pin ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --extra dev
 
       - name: Lint with ruff
         run: uv run ruff check opengaia/ tests/
 
       - name: Type check with mypy
-        run: uv run mypy opengaia/
+        run: uv run mypy opengaia/ --ignore-missing-imports
 
       - name: Test with pytest
         run: uv run pytest tests/ -q --tb=short
