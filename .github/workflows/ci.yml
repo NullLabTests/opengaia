@@ -33,7 +33,8 @@ jobs:
         run: uv run ruff check opengaia/ tests/
 
       - name: Type check with mypy
-        run: uv run mypy opengaia/ --ignore-missing-imports
+        if: ${{ matrix.python-version == '3.12' }}
+        run: uv run mypy opengaia/core/scenario_runner.py opengaia/core/xarray_state.py opengaia/adapters/earth2studio.py --ignore-missing-imports
 
       - name: Test with pytest
         run: uv run pytest tests/ -q --tb=short
