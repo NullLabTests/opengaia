@@ -34,7 +34,7 @@ jobs:
 
       - name: Type check with mypy
         if: ${{ matrix.python-version == '3.12' }}
-        run: uv run mypy opengaia/core/scenario_runner.py opengaia/core/xarray_state.py opengaia/adapters/earth2studio.py --ignore-missing-imports
+        run: uv run mypy opengaia/core/scenario_runner.py opengaia/core/xarray_state.py opengaia/adapters/earth2studio.py --ignore-missing-imports --python-version 3.12
 
       - name: Test with pytest
         run: uv run pytest tests/ -q --tb=short
